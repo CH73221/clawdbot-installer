@@ -579,12 +579,17 @@ footer a:hover {
 .qr-box {
     background: white;
     border-radius: 8px;
-    padding: 40px;
-    min-height: 200px;
+    padding: 20px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.qr-image {
+    max-width: 100%;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
 }
 
 .qr-text {
