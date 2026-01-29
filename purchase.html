@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Starry Background -->
+    <canvas id="starfield" class="starfield"></canvas>
+    <div class="overlay"></div>
     <div class="container">
         <div class="card">
             <!-- Header -->
@@ -24,7 +27,7 @@
 
             <!-- Payment Methods -->
             <div class="payment-methods">
-                <div class="payment-method" id="wechatMethod">
+                <div class="payment-method active" id="wechatMethod">
                     <div class="method-header">
                         <span class="method-icon">💬</span>
                         <span class="method-name">微信支付</span>
@@ -35,21 +38,6 @@
                             <p>请使用微信扫描二维码支付</p>
                             <div class="qr-box">
                                 <img src="images/wechat-qr.png" alt="微信收款码" class="qr-image">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="payment-method" id="alipayMethod">
-                    <div class="method-header">
-                        <span class="method-icon">💰</span>
-                        <span class="method-name">支付宝</span>
-                    </div>
-                    <div class="method-content">
-                        <div class="qr-placeholder">
-                            <p>请使用支付宝扫描二维码支付</p>
-                            <div class="qr-box">
-                                <img src="images/alipay-qr.png" alt="支付宝收款码" class="qr-image">
                             </div>
                         </div>
                     </div>
@@ -101,18 +89,9 @@
     </div>
 
     <script>
-        // 切换支付方式
-        document.querySelectorAll('.payment-method').forEach(method => {
-            method.addEventListener('click', function() {
-                document.querySelectorAll('.payment-method').forEach(m => {
-                    m.classList.remove('active');
-                });
-                this.classList.add('active');
-            });
-        });
-
         // 默认选中微信
         document.getElementById('wechatMethod').classList.add('active');
     </script>
+    <script src="js/starfield.js"></script>
 </body>
 </html>

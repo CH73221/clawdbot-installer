@@ -5,6 +5,28 @@
     box-sizing: border-box;
 }
 
+/* ==================== Starfield Background ==================== */
+.starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(6, 11, 25, 0.4) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
 /* ==================== Variables ==================== */
 :root {
     --bg-primary: #0a0a0f;
@@ -38,16 +60,50 @@ body {
 .container {
     width: 100%;
     max-width: 480px;
+    position: relative;
+    z-index: 2;
 }
 
 /* ==================== Card ==================== */
 .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: rgba(26, 26, 37, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
     padding: 40px;
-    box-shadow: var(--shadow);
-    animation: fadeInUp 0.5s ease;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(100, 150, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: cardFadeIn 0.8s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent);
+}
+
+/* ==================== Animations ==================== */
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @keyframes fadeInUp {
@@ -69,26 +125,55 @@ body {
 
 .logo-icon {
     font-size: 64px;
-    display: block;
+    display: inline-block;
     margin-bottom: 8px;
-    animation: float 3s ease-in-out infinite;
+    animation: logoFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 150, 100, 0.3));
+    transition: filter 0.3s;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+.logo:hover .logo-icon {
+    filter: drop-shadow(0 0 30px rgba(255, 150, 100, 0.5));
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-8px) rotate(2deg);
+    }
+    75% {
+        transform: translateY(-8px) rotate(-2deg);
+    }
 }
 
 .logo h1 {
     font-size: 28px;
     font-weight: 600;
     color: var(--text-primary);
+    background: linear-gradient(135deg, #f0f0f5 0%, #a0a0c0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .subtitle {
     color: var(--text-secondary);
     font-size: 14px;
     margin-top: 4px;
+    animation: fadeIn 1s ease 0.3s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==================== Form ==================== */
@@ -106,26 +191,37 @@ label {
 input[type="text"] {
     width: 100%;
     padding: 14px 16px;
-    background: var(--bg-secondary);
+    background: rgba(18, 18, 26, 0.8);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--text-primary);
     font-size: 16px;
     font-family: 'SF Mono', 'Consolas', monospace;
     letter-spacing: 2px;
     text-transform: uppercase;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+    background: rgba(18, 18, 26, 0.95);
+    box-shadow:
+        0 0 0 3px rgba(255, 107, 53, 0.15),
+        0 0 20px rgba(255, 107, 53, 0.1);
+    transform: translateY(-1px);
 }
 
 input[type="text"]::placeholder {
     letter-spacing: 1px;
     color: var(--text-secondary);
+    transition: opacity 0.3s;
+}
+
+input[type="text"]:focus::placeholder {
+    opacity: 0.5;
 }
 
 .hint {
@@ -147,27 +243,55 @@ input[type="text"]::placeholder {
 .btn-primary {
     width: 100%;
     padding: 14px;
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, #ff8b5a 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: white;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        0 4px 15px rgba(255, 107, 53, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 25px rgba(255, 107, 53, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.98);
 }
 
 .btn-primary:disabled {
     background: var(--text-secondary);
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .hidden {
