@@ -1,29 +1,23 @@
 @echo off
-:: Clawdbot Auto Installer Launcher
-:: Double-click to run - No configuration needed
+title Clawdbot Installer
 
-title Clawdbot Installing...
-
-:: Check admin privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    echo Admin privileges required...
-    echo Requesting admin rights...
+    echo Requesting admin privileges...
     powershell -Command "Start-Process '%~f0' -Verb RunAs"
     exit /b
 )
 
-:: Run PowerShell script with bypass policy
-powershell -NoProfile -ExecutionPolicy Bypass -Command "^
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path; ^
-$scriptPath = Join-Path $scriptDir 'install-clawdbot-windows.ps1'; ^
-if (Test-Path $scriptPath) { . $scriptPath } else { ^
-Write-Host 'ERROR: Script not found' -ForegroundColor Red; ^
-Write-Host 'Make sure .bat and .ps1 are in the same folder' -ForegroundColor Yellow; ^
-pause }"
+echo Downloading and running Clawdbot installer...
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+"$url='https://raw.githubusercontent.com/CH73221/clawdbot-installer/refs/heads/main/scripts/install-clawdbot-windows.ps1'; ^
+$script='$env:TEMP\clawdbot.ps1'; ^
+Invoke-WebRequest -Uri $url -OutFile $script -UseBasicParsing; ^
+& $script; ^
+Remove-Item $script -ErrorAction SilentlyContinue"
 
 if %errorLevel% neq 0 (
     echo.
-    echo Installation failed. Press any key to exit...
+    echo Installation failed. Press any key...
     pause >nul
 )
