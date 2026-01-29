@@ -25,7 +25,7 @@
                     <div class="download-icon">⊞</div>
                     <div class="download-info">
                         <h3>Windows</h3>
-                        <p>PowerShell 安装脚本</p>
+                        <p>双击运行，全自动安装</p>
                     </div>
                     <span class="download-arrow">↓</span>
                 </a>
@@ -64,10 +64,9 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h4>运行脚本</h4>
-                        <p>Windows: 右键以<strong>管理员身份</strong>运行 PowerShell，执行:</p>
-                        <p><code>Set-ExecutionPolicy Bypass -Scope Process</code></p>
-                        <p><code>.\install-clawdbot-windows.ps1</code></p>
+                        <h4>双击运行脚本</h4>
+                        <p>Windows: 双击下载的 <code>.bat</code> 文件即可</p>
+                        <p>macOS/Linux: 在终端执行 <code>bash install-clawdbot-macos-linux.sh</code></p>
                     </div>
                 </div>
 
@@ -101,7 +100,7 @@
             let filename, content;
 
             if (platform === 'windows') {
-                filename = 'install-clawdbot-windows.ps1';
+                filename = 'install-clawdbot-windows.bat';
             } else {
                 filename = 'install-clawdbot-macos-linux.sh';
             }
