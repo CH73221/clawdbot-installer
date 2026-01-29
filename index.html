@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clawdbot 安装 - 密钥验证</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Logo / Title -->
+            <div class="logo">
+                <span class="logo-icon">🦞</span>
+                <h1>Clawdbot</h1>
+                <p class="subtitle">一键安装助手</p>
+            </div>
+
+            <!-- Input Form -->
+            <div class="form-section">
+                <label for="keyInput">方式一：输入您已有的安装密钥</label>
+                <input
+                    type="text"
+                    id="keyInput"
+                    placeholder="XXXX-XXXX-XXXX-XXXX"
+                    maxlength="25"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+
+            <!-- Verify Button -->
+            <button id="verifyBtn" class="btn-primary">
+                <span class="btn-text">验证密钥</span>
+                <span class="btn-loading hidden">验证中...</span>
+            </button>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>或</span>
+            </div>
+
+            <!-- Purchase Button -->
+            <a href="purchase.html" class="btn-purchase">
+                <span class="purchase-icon">🛒</span>
+                <span class="purchase-text">方式二：在线购买密钥</span>
+            </a>
+
+            <!-- Admin Link -->
+            <p class="admin-link"><a href="admin.html">管理后台</a></p>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message hidden">
+                <span class="error-icon">⚠</span>
+                <span class="error-text"></span>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>支持 Windows / macOS / Linux</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>一键自动安装</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>内置配置向导</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>由 Clawdbot 社区支持 | <a href="https://docs.molt.bot" target="_blank">官方文档</a></p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "clawdbot-installer-server",
+  "version": "1.0.0",
+  "description": "Clawdbot 安装助手 - 后端服务",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "init-db": "node database.js init",
+    "generate-key": "node database.js generate",
+    "list-keys": "node database.js list"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

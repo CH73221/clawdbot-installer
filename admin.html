@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - Clawdbot 安装助手</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="card" id="loginCard">
+            <div class="logo">
+                <span class="logo-icon">🔐</span>
+                <h1>管理后台登录</h1>
+                <p class="subtitle">请输入管理员密码</p>
+            </div>
+
+            <div class="form-section">
+                <label for="passwordInput">管理员密码</label>
+                <input
+                    type="password"
+                    id="passwordInput"
+                    placeholder="请输入密码"
+                >
+            </div>
+
+            <button id="loginBtn" class="btn-primary">登录</button>
+
+            <div id="loginError" class="error-message hidden">
+                <span class="error-icon">⚠</span>
+                <span class="error-text">密码错误</span>
+            </div>
+
+            <p class="admin-link"><a href="index.html">返回首页</a></p>
+        </div>
+
+        <!-- Admin Panel (hidden by default) -->
+        <div class="card admin-panel hidden" id="adminPanel">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <span class="logo-icon">📋</span>
+                    <h1>密钥管理</h1>
+                </div>
+                <button id="logoutBtn" class="btn-secondary">退出登录</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="admin-actions">
+                <button id="generateKeyBtn" class="btn-action">
+                    <span>➕</span> 生成新密钥
+                </button>
+                <button id="refreshBtn" class="btn-action">
+                    <span>🔄</span> 刷新列表
+                </button>
+            </div>
+
+            <!-- Generate Form (hidden by default) -->
+            <div class="generate-form hidden" id="generateForm">
+                <h3>生成新密钥</h3>
+                <div class="form-row">
+                    <label>最大使用次数</label>
+                    <input type="number" id="maxUses" value="1" min="1">
+                </div>
+                <div class="form-row">
+                    <label>有效天数（留空为永久）</label>
+                    <input type="number" id="expiresDays" placeholder="留空永久">
+                </div>
+                <div class="form-row">
+                    <label>备注</label>
+                    <input type="text" id="keyNote" placeholder="客户名称或其他说明">
+                </div>
+                <div class="form-actions">
+                    <button id="cancelGenerate" class="btn-secondary">取消</button>
+                    <button id="confirmGenerate" class="btn-primary">生成</button>
+                </div>
+            </div>
+
+            <!-- Key List -->
+            <div class="key-list" id="keyList">
+                <p class="loading">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Detail Modal -->
+    <div class="modal hidden" id="keyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>密钥详情</h3>
+                <button class="modal-close" id="closeModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="key-display">
+                    <label>密钥</label>
+                    <div class="key-value" id="modalKey">XXXX-XXXX-XXXX-XXXX</div>
+                    <button class="btn-copy" id="copyKeyBtn">📋 复制密钥</button>
+                </div>
+                <div class="key-info">
+                    <p><strong>状态：</strong><span id="modalStatus">active</span></p>
+                    <p><strong>使用：</strong><span id="modalUsage">0/1</span></p>
+                    <p><strong>创建时间：</strong><span id="modalCreated">-</span></p>
+                    <p><strong>过期时间：</strong><span id="modalExpires">永不过期</span></p>
+                    <p><strong>备注：</strong><span id="modalNote">-</span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="revokeKeyBtn" class="btn-danger">吊销密钥</button>
+                <button id="closeModalBtn" class="btn-secondary">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

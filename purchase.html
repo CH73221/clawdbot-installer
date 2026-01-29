@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购买密钥 - Clawdbot 安装助手</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Header -->
+            <div class="logo">
+                <span class="logo-icon">🛒</span>
+                <h1>购买安装密钥</h1>
+                <p class="subtitle">选择支付方式完成购买</p>
+            </div>
+
+            <!-- Price Info -->
+            <div class="price-info">
+                <span class="price-label">安装密钥</span>
+                <span class="price-amount">￥5.9</span>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <div class="payment-method" id="wechatMethod">
+                    <div class="method-header">
+                        <span class="method-icon">💬</span>
+                        <span class="method-name">微信支付</span>
+                        <span class="method-badge">推荐</span>
+                    </div>
+                    <div class="method-content">
+                        <div class="qr-placeholder">
+                            <p>请使用微信扫描二维码支付</p>
+                            <div class="qr-box">
+                                <span class="qr-text">微信收款码</span>
+                                <p class="qr-hint">请替换为您的收款码图片</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-method" id="alipayMethod">
+                    <div class="method-header">
+                        <span class="method-icon">💰</span>
+                        <span class="method-name">支付宝</span>
+                    </div>
+                    <div class="method-content">
+                        <div class="qr-placeholder">
+                            <p>请使用支付宝扫描二维码支付</p>
+                            <div class="qr-box">
+                                <span class="qr-text">支付宝收款码</span>
+                                <p class="qr-hint">请替换为您的收款码图片</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Button -->
+            <button id="confirmPayment" class="btn-primary">
+                <span>我已完成支付，获取密钥</span>
+            </button>
+
+            <!-- Back Button -->
+            <button onclick="window.location.href='index.html'" class="btn-secondary">
+                返回首页
+            </button>
+
+            <!-- Help Text -->
+            <p class="help-text">
+                支付完成后，点击上方按钮即可获取密钥并进入下载页面<br>
+                如有问题，请联系客服
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>安全支付保障 | <a href="index.html">返回首页</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // 支付确认逻辑
+        document.getElementById('confirmPayment').addEventListener('click', function() {
+            // 生成一个新密钥（实际应该在后端验证支付后生成）
+            // 这里直接跳转到下载页，标记为已支付
+            sessionStorage.setItem('verifiedKey', '');
+            sessionStorage.setItem('paidPurchase', 'true');
+            window.location.href = 'download.html';
+        });
+
+        // 切换支付方式
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => {
+                    m.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+
+        // 默认选中微信
+        document.getElementById('wechatMethod').classList.add('active');
+    </script>
+</body>
+</html>

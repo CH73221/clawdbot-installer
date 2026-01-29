@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clawdbot - 下载安装脚本</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Success Banner -->
+            <div class="success-banner">
+                <div class="icon">✓</div>
+                <h2>密钥验证成功</h2>
+                <p>选择您的操作系统开始安装</p>
+            </div>
+
+            <!-- Download Buttons -->
+            <div class="download-section">
+                <a id="downloadWindows" href="#" class="download-card" download>
+                    <div class="download-icon">⊞</div>
+                    <div class="download-info">
+                        <h3>Windows</h3>
+                        <p>PowerShell 安装脚本</p>
+                    </div>
+                    <span class="download-arrow">↓</span>
+                </a>
+
+                <a id="downloadMac" href="#" class="download-card" download>
+                    <div class="download-icon"></div>
+                    <div class="download-info">
+                        <h3>macOS</h3>
+                        <p>Bash 安装脚本</p>
+                    </div>
+                    <span class="download-arrow">↓</span>
+                </a>
+
+                <a id="downloadLinux" href="#" class="download-card" download>
+                    <div class="download-icon">🐧</div>
+                    <div class="download-info">
+                        <h3>Linux</h3>
+                        <p>Bash 安装脚本</p>
+                    </div>
+                    <span class="download-arrow">↓</span>
+                </a>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3>快速安装指南</h3>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>下载对应平台的脚本</h4>
+                        <p>点击上方按钮下载适合您系统的安装脚本</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>运行脚本</h4>
+                        <p>Windows: 右键以<strong>管理员身份</strong>运行 PowerShell，执行:</p>
+                        <p><code>Set-ExecutionPolicy Bypass -Scope Process</code></p>
+                        <p><code>.\install-clawdbot-windows.ps1</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>配置 AI 模型</h4>
+                        <p>准备 API 密钥，配置向导会引导您完成设置</p>
+                        <p>获取地址: <a href="https://console.anthropic.com/" target="_blank">Anthropic</a> 或 <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <button onclick="window.location.href='index.html'" class="btn-primary" style="margin-top: 24px; background: var(--bg-secondary);">
+                ← 返回
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>需要帮助？查看 <a href="https://docs.molt.bot" target="_blank">官方文档</a> 或 <a href="https://discord.gg/clawd" target="_blank">加入 Discord</a></p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
