@@ -21,7 +21,7 @@
 
             <!-- Download Buttons -->
             <div class="download-section">
-                <a id="downloadWindows" href="#" class="download-card" download>
+                <a onclick="downloadScript('windows')" class="download-card">
                     <div class="download-icon">⊞</div>
                     <div class="download-info">
                         <h3>Windows</h3>
@@ -30,7 +30,7 @@
                     <span class="download-arrow">↓</span>
                 </a>
 
-                <a id="downloadMac" href="#" class="download-card" download>
+                <a onclick="downloadScript('mac')" class="download-card">
                     <div class="download-icon"></div>
                     <div class="download-info">
                         <h3>macOS</h3>
@@ -39,7 +39,7 @@
                     <span class="download-arrow">↓</span>
                 </a>
 
-                <a id="downloadLinux" href="#" class="download-card" download>
+                <a onclick="downloadScript('linux')" class="download-card">
                     <div class="download-icon">🐧</div>
                     <div class="download-info">
                         <h3>Linux</h3>
@@ -95,5 +95,41 @@
 
     <script src="js/app.js"></script>
     <script src="js/starfield.js"></script>
+    <script>
+        // 下载脚本函数
+        function downloadScript(platform) {
+            let filename, content;
+
+            if (platform === 'windows') {
+                filename = 'install-clawdbot-windows.ps1';
+            } else {
+                filename = 'install-clawdbot-macos-linux.sh';
+            }
+
+            // 获取脚本内容并触发下载
+            fetch('scripts/' + filename)
+                .then(response => {
+                    if (!response.ok) throw new Error('文件不存在');
+                    return response.text();
+                })
+                .then(text => {
+                    // 创建 Blob 并下载
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    // 如果 fetch 失败，尝试直接打开链接
+                    console.error('下载失败，尝试直接打开:', error);
+                    window.open('scripts/' + filename, '_blank');
+                });
+        }
+    </script>
 </body>
 </html>
