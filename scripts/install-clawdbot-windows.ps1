@@ -3,9 +3,24 @@
 #  无需手动操作，自动安装所有依赖
 # ==============================================
 
+# 设置错误处理
+$ErrorActionPreference = "Stop"
+
 # 设置编码
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $Host.UI.RawUI.WindowTitle = "Clawdbot 安装中..."
+
+# 全局错误处理
+trap {
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host "发生错误: $_" -ForegroundColor Red
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "按任意键退出..." -ForegroundColor Yellow
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    exit 1
+}
 
 # 颜色输出函数
 function Write-ColorOutput($ForegroundColor) {
@@ -64,8 +79,8 @@ $nodeInstalled = $false
 $nodeVersionRequired = "22"
 
 try {
-    $nodeVersion = node --version 2>$null
-    if ($nodeVersion) {
+    $nodeVersion = & node --version 2>&1
+    if ($LASTEXITCODE -eq 0 -and $nodeVersion) {
         $versionNumber = [int]($nodeVersion -replace 'v', '' -split '\.')[0]
         if ($versionNumber -ge $nodeVersionRequired) {
             Write-Success "Node.js 已安装: $nodeVersion"
@@ -73,8 +88,12 @@ try {
         } else {
             Write-Warning "Node.js 版本过低: $nodeVersion (需要 $nodeVersionRequired+)"
         }
+    } else {
+        Write-Warning "Node.js 未安装"
     }
-} catch {}
+} catch {
+    Write-Warning "Node.js 检测失败，将尝试安装"
+}
 
 if (-not $nodeInstalled) {
     Write-Info "正在下载 Node.js 安装程序..."
@@ -89,7 +108,10 @@ if (-not $nodeInstalled) {
 
         # 刷新环境变量
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-        RefreshEnv
+        # 刷新系统环境变量（适用于当前会话）
+        foreach ($level in "Machine", "User") {
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", $level) + ";" + $env:Path
+        }
     } catch {
         Write-Error "Node.js 下载/安装失败"
         Write-Info "请手动下载安装: https://nodejs.org"
@@ -104,12 +126,16 @@ Write-Step "步骤 2/6: 检查 Git..."
 $gitInstalled = $false
 
 try {
-    $gitVersion = git --version 2>$null
-    if ($gitVersion) {
+    $gitVersion = & git --version 2>&1
+    if ($LASTEXITCODE -eq 0 -and $gitVersion) {
         Write-Success "Git 已安装: $gitVersion"
         $gitInstalled = $true
+    } else {
+        Write-Warning "Git 未安装"
     }
-} catch {}
+} catch {
+    Write-Warning "Git 检测失败，将尝试安装"
+}
 
 if (-not $gitInstalled) {
     Write-Info "正在下载 Git 安装程序..."
@@ -119,7 +145,7 @@ if (-not $gitInstalled) {
     try {
         Invoke-WebRequest -Uri $gitUrl -OutFile $gitInstaller -UseBasicParsing
         Write-Info "正在安装 Git（请稍候...）"
-        Start-Process $gitInstaller -ArgumentList '/VERYSILENT /NORESTART /NOCANCEL /SP-' /COMPONENTS="GitLFS,associations"' -Wait
+        Start-Process $gitInstaller -ArgumentList '/VERYSILENT', '/NORESTART', '/NOCANCEL', '/SP-', '/COMPONENTS="GitLFS,associations"' -Wait
         Write-Success "Git 安装完成"
 
         # 刷新环境变量
@@ -136,17 +162,18 @@ if (-not $gitInstalled) {
 # ========== 3. 安装 pnpm ==========
 Write-Step "步骤 3/6: 安装 pnpm..."
 try {
-    $pnpmVersion = pnpm --version 2>$null
-    if ($pnpmVersion) {
+    $pnpmVersion = & pnpm --version 2>&1
+    if ($LASTEXITCODE -eq 0 -and $pnpmVersion) {
         Write-Success "pnpm 已安装: $pnpmVersion"
     } else {
         throw "pnpm not found"
     }
 } catch {
     Write-Info "正在全局安装 pnpm..."
-    npm install -g pnpm --silent 2>$null
+    & npm install -g pnpm --silent 2>&1 | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        Write-Success "pnpm 安装成功"
+        $pnpmVersion = & pnpm --version 2>&1
+        Write-Success "pnpm 安装成功 (版本: $pnpmVersion)"
     } else {
         Write-Error "pnpm 安装失败"
         Write-Info "按任意键退出..."
