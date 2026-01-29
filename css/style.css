@@ -32,14 +32,37 @@
     --bg-primary: #0a0a0f;
     --bg-secondary: #12121a;
     --bg-card: #1a1a25;
-    --text-primary: #f0f0f5;
-    --text-secondary: #8888a0;
+    --text-primary: #2a2a35;
+    --text-secondary: #6a6a75;
     --accent: #ff6b35;
     --accent-hover: #ff8555;
     --success: #22c55e;
     --error: #ef4444;
-    --border: #2a2a35;
+    --border: #e0e0e8;
     --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ==================== Card Text Override ==================== */
+.card .logo h1 {
+    color: #2a2a35 !important;
+    background: none !important;
+    -webkit-text-fill-color: #2a2a35 !important;
+}
+
+.card .subtitle,
+.card .form-section label,
+.card .hint,
+.card .feature,
+.card footer p,
+.card .help-text,
+.card .step-text,
+.card .contact-label,
+.card .qr-placeholder p {
+    color: #6a6a75 !important;
+}
+
+.card .logo-icon {
+    filter: none !important;
 }
 
 /* ==================== Base ==================== */
@@ -66,16 +89,16 @@ body {
 
 /* ==================== Card ==================== */
 .card {
-    background: rgba(26, 26, 37, 0.85);
+    background: linear-gradient(135deg, #FEFDF8 0%, #F8F6F0 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     padding: 40px;
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 80px rgba(100, 150, 255, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 100px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
     animation: cardFadeIn 0.8s ease;
     position: relative;
     overflow: hidden;
@@ -90,7 +113,7 @@ body {
     height: 1px;
     background: linear-gradient(90deg,
         transparent,
-        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.8),
         transparent);
 }
 
@@ -191,11 +214,11 @@ label {
 input[type="text"] {
     width: 100%;
     padding: 14px 16px;
-    background: rgba(18, 18, 26, 0.8);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--border);
+    border: 1px solid #d0d0d8;
     border-radius: 12px;
-    color: var(--text-primary);
+    color: #2a2a35;
     font-size: 16px;
     font-family: 'SF Mono', 'Consolas', monospace;
     letter-spacing: 2px;
@@ -207,16 +230,16 @@ input[type="text"] {
 input[type="text"]:focus {
     outline: none;
     border-color: var(--accent);
-    background: rgba(18, 18, 26, 0.95);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow:
-        0 0 0 3px rgba(255, 107, 53, 0.15),
-        0 0 20px rgba(255, 107, 53, 0.1);
+        0 0 0 3px rgba(255, 107, 53, 0.1),
+        0 4px 15px rgba(255, 107, 53, 0.15);
     transform: translateY(-1px);
 }
 
 input[type="text"]::placeholder {
     letter-spacing: 1px;
-    color: var(--text-secondary);
+    color: #a0a0a8;
     transition: opacity 0.3s;
 }
 
