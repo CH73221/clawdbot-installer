@@ -34,7 +34,8 @@ const TOKEN_EXPIRY = 2 * 60 * 60 * 1000; // 2 小时
 const ADMIN_PATH = process.env.ADMIN_PATH || generateRandomPath();
 
 // 数据目录配置（与 database.js 保持一致）
-const DATA_DIR = fs.existsSync('/data') ? '/data' : path.join(__dirname);
+const VOLUME_PATH = process.env.RAILWAY_VOLUME_MOUNT_PATH || '/data';
+const DATA_DIR = fs.existsSync(VOLUME_PATH) ? VOLUME_PATH : path.join(__dirname);
 
 // 操作日志文件
 const ADMIN_LOG_FILE = path.join(DATA_DIR, 'admin.log');

@@ -7,7 +7,9 @@ const path = require('path');
 // ==================== 数据目录配置 ====================
 // Railway Volume 挂载点: /data
 // 本地开发: 项目目录
-const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
+// 优先检查环境变量 RAILWAY_VOLUME_MOUNT_PATH
+const VOLUME_PATH = process.env.RAILWAY_VOLUME_MOUNT_PATH || '/data';
+const DATA_DIR = fs.existsSync(VOLUME_PATH) ? VOLUME_PATH : __dirname;
 
 // 确保数据目录存在
 if (!fs.existsSync(DATA_DIR)) {
