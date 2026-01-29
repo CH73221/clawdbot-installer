@@ -607,8 +607,86 @@ footer a:hover {
     text-align: center;
     color: var(--text-secondary);
     font-size: 13px;
-    margin-top: 16px;
     line-height: 1.6;
+}
+
+/* ==================== Steps Info ==================== */
+.steps-info {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+}
+
+.steps-info h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.step-item:last-child {
+    margin-bottom: 0;
+}
+
+.step-num {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-text strong {
+    color: var(--primary);
+}
+
+/* ==================== Contact Box ==================== */
+.contact-box {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.contact-label {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.contact-value {
+    margin: 0 0 16px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 2px;
+}
+
+.contact-box .btn-primary {
+    background: white;
+    color: #667eea;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.contact-box .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.9);
 }
 
 /* ==================== Admin Page ==================== */

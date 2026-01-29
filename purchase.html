@@ -56,10 +56,31 @@
                 </div>
             </div>
 
-            <!-- Confirm Button -->
-            <button id="confirmPayment" class="btn-primary">
-                <span>我已完成支付，获取密钥</span>
-            </button>
+            <!-- Steps -->
+            <div class="steps-info">
+                <h3>📋 获取密钥步骤</h3>
+                <div class="step-item">
+                    <span class="step-num">1</span>
+                    <span class="step-text">扫描上方二维码支付 <strong>￥5.9</strong></span>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">2</span>
+                    <span class="step-text">添加客服 QQ：<strong>486998849</strong></span>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">3</span>
+                    <span class="step-text">发送支付截图，系统自动发送密钥</span>
+                </div>
+            </div>
+
+            <!-- QQ Contact -->
+            <div class="contact-box">
+                <p class="contact-label">客服 QQ</p>
+                <p class="contact-value">486998849</p>
+                <a href="http://wpa.qq.com/msgrd?v=3&uin=486998849&site=qq&menu=yes" target="_blank" class="btn-primary">
+                    💬 点击添加客服 QQ
+                </a>
+            </div>
 
             <!-- Back Button -->
             <button onclick="window.location.href='index.html'" class="btn-secondary">
@@ -68,8 +89,8 @@
 
             <!-- Help Text -->
             <p class="help-text">
-                支付完成后，点击上方按钮即可获取密钥并进入下载页面<br>
-                如有问题，请联系客服
+                支付完成后添加客服 QQ，发送支付截图即可获取密钥<br>
+                <strong>24 小时内自动回复，请耐心等待</strong>
             </p>
         </div>
 
@@ -80,15 +101,6 @@
     </div>
 
     <script>
-        // 支付确认逻辑
-        document.getElementById('confirmPayment').addEventListener('click', function() {
-            // 生成一个新密钥（实际应该在后端验证支付后生成）
-            // 这里直接跳转到下载页，标记为已支付
-            sessionStorage.setItem('verifiedKey', '');
-            sessionStorage.setItem('paidPurchase', 'true');
-            window.location.href = 'download.html';
-        });
-
         // 切换支付方式
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
