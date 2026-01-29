@@ -1,15 +1,16 @@
 #!/bin/bash
 # ==============================================
-#  Clawdbot 一键安装脚本 (macOS / Linux)
-#  ==============================================
-
-set -e
+#  Clawdbot 全自动安装脚本 (macOS / Linux)
+#  无需手动操作，自动安装所有依赖
+# ==============================================set -e
 
 # 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+GRAY='\033[0;37m'
 NC='\033[0m' # No Color
 
 # 输出函数
@@ -17,28 +18,27 @@ success() { echo -e "${GREEN}✓ $1${NC}"; }
 info() { echo -e "${CYAN}ℹ $1${NC}"; }
 error() { echo -e "${RED}✗ $1${NC}"; }
 warning() { echo -e "${YELLOW}⚠ $1${NC}"; }
+step() { echo -e "${YELLOW}▶ $1${NC}"; }
 
 # 清屏并显示标题
 clear
-echo -e "${CYAN}===================================${NC}"
-echo -e "${CYAN}   Clawdbot 一键安装脚本${NC}"
-echo -e "${CYAN}===================================${NC}"
+echo -e "${CYAN}========================================${NC}"
+echo -e "${CYAN}   Clawdbot 全自动安装脚本${NC}"
+echo -e "${CYAN}========================================${NC}"
 echo ""
-echo -e "${YELLOW}重要提示: 安装过程中需要配置 AI 模型的 API 密钥${NC}"
-echo ""
-echo -e "${CYAN}请提前准备以下任一 API 密钥:${NC}"
-echo -e "  ${YELLOW}1. Anthropic API Key (推荐 Claude Opus 4.5)${NC}"
-echo -e "     ${GRAY}获取地址: https://console.anthropic.com/${NC}"
-echo -e "  ${YELLOW}2. OpenAI API Key${NC}"
-echo -e "     ${GRAY}获取地址: https://platform.openai.com/api-keys${NC}"
-echo ""
-echo -e "${CYAN}如果没有 API 密钥，配置向导也可以稍后通过以下命令重新运行:${NC}"
-echo -e "   ${GREEN}pnpm moltbot onboard${NC}"
-echo ""
-read -p "按 Enter 继续，或按 Ctrl+C 取消..."
+echo -e "${CYAN}此脚本将自动：${NC}"
+echo -e "  ${GREEN}✓ 检查/安装 Node.js${NC}"
+echo -e "  ${GREEN}✓ 检查/安装 Git${NC}"
+echo -e "  ${GREEN}✓ 安装 pnpm${NC}"
+echo -e "  ${GREEN}✓ 下载并安装 Clawdbot${NC}"
+echo -e "  ${YELLOW}✓ 配置 AI 模型 API 密钥${NC}"
 echo ""
 
-# 检测操作系统
+# 创建临时目录
+TEMP_DIR="/tmp/clawdbot_install"
+mkdir -p "$TEMP_DIR"
+
+# ========== 1. 检测操作系统 ==========
 OS="$(uname -s)"
 case "${OS}" in
     Linux*)     MACHINE=Linux;;
@@ -47,129 +47,207 @@ case "${OS}" in
 esac
 info "检测到系统: $MACHINE"
 
-# 1. 检查 Node.js 版本
-info "检查 Node.js 版本..."
+# ========== 2. 检查/安装 Node.js ==========
+step "步骤 1/6: 检查 Node.js..."
+NODE_VERSION_REQUIRED=22
+
 if ! command -v node &> /dev/null; then
-    error "未检测到 Node.js"
-    info "请安装 Node.js 22+:"
+    info "Node.js 未安装，正在安装..."
+
     if [ "$MACHINE" = "Mac" ]; then
-        echo "  brew install node"
+        # macOS 使用 Homebrew
+        if ! command -v brew &> /dev/null; then
+            info "正在安装 Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install node
     else
-        echo "  访问 https://nodejs.org"
+        # Linux 使用 nvm 安装
+        if [ ! -d "$HOME/.nvm" ]; then
+            info "正在安装 nvm..."
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+        fi
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 22
+        nvm use 22
     fi
-    exit 1
+    success "Node.js 安装完成"
+else
+    NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    if [ "$NODE_VERSION" -lt $NODE_VERSION_REQUIRED ]; then
+        warning "Node.js 版本过低 (v$NODE_VERSION)，需要 v$NODE_VERSION_REQUIRED+"
+        info "请手动升级 Node.js"
+        exit 1
+    fi
+    success "Node.js 版本: $(node --version)"
 fi
 
-NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
-if [ "$NODE_VERSION" -lt 22 ]; then
-    error "需要 Node.js 22 或更高版本！当前: v$NODE_VERSION"
-    exit 1
-fi
-success "Node.js 版本: $(node --version)"
+# ========== 3. 检查/安装 Git ==========
+step "步骤 2/6: 检查 Git..."
 
-# 2. 检查 Git
-info "检查 Git..."
 if ! command -v git &> /dev/null; then
-    error "未检测到 Git"
-    info "请先安装 Git"
-    exit 1
-fi
-success "Git: $(git --version)"
+    info "Git 未安装，正在安装..."
 
-# 3. 安装 pnpm（如果没有）
-info "检查 pnpm..."
+    if [ "$MACHINE" = "Mac" ]; then
+        brew install git
+    else
+        sudo apt-get update && sudo apt-get install -y git
+    fi
+    success "Git 安装完成"
+else
+    success "Git: $(git --version)"
+fi
+
+# ========== 4. 安装 pnpm ==========
+step "步骤 3/6: 安装 pnpm..."
+
 if ! command -v pnpm &> /dev/null; then
-    info "正在安装 pnpm..."
-    npm install -g pnpm
+    info "正在全局安装 pnpm..."
+    npm install -g pnpm --silent
     success "pnpm 安装完成"
 else
     success "pnpm 版本: $(pnpm --version)"
 fi
 
-# 4. 设置安装目录
+# ========== 5. 设置安装目录 ==========
+step "步骤 4/6: 设置安装目录..."
 INSTALL_DIR="$HOME/clawdbot"
 info "安装目录: $INSTALL_DIR"
 
-# 5. 克隆仓库
 if [ -d "$INSTALL_DIR" ]; then
-    warning "目录已存在: $INSTALL_DIR"
-    read -p "是否覆盖安装? (Y/N) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        rm -rf "$INSTALL_DIR"
-    else
-        info "安装已取消"
-        exit 0
-    fi
+    warning "目录已存在，将进行覆盖安装"
+    rm -rf "$INSTALL_DIR"
 fi
 
-info "正在下载 Clawdbot 源码..."
-git clone --depth 1 https://github.com/moltbot/moltbot.git "$INSTALL_DIR"
-success "下载完成"
+# ========== 6. 下载并安装 Clawdbot ==========
+step "步骤 5/6: 下载 Clawdbot..."
+info "正在从 GitHub 克隆源码（可能需要几分钟）..."
 
-# 6. 安装依赖
+git clone --depth 1 --quiet https://github.com/moltbot/moltbot.git "$INSTALL_DIR"
+if [ -f "$INSTALL_DIR/package.json" ]; then
+    success "下载完成"
+else
+    error "下载失败，请检查网络连接"
+    exit 1
+fi
+
 cd "$INSTALL_DIR"
-info "正在安装依赖 (可能需要几分钟)..."
-pnpm install
+
+info "正在安装依赖（需要几分钟，请耐心等待）..."
+if ! pnpm install --silent; then
+    warning "安装遇到问题，重试中..."
+    pnpm install
+fi
 success "依赖安装完成"
 
-# 7. 构建 UI
-info "正在构建 UI..."
-pnpm ui:build
-success "UI 构建完成"
-
-# 8. 构建
-info "正在构建 Clawdbot..."
-pnpm build
+info "正在构建组件..."
+pnpm ui:build --silent 2>/dev/null || pnpm ui:build
+pnpm build --silent 2>/dev/null || pnpm build
 success "构建完成"
 
-# 9. 运行配置向导
+# ========== 7. 创建启动脚本 ==========
+step "步骤 6/6: 创建快捷启动脚本..."
+
+START_SCRIPT="$HOME/Desktop/start-clawdbot.sh"
+
+cat > "$START_SCRIPT" << 'EOF'
+#!/bin/bash
+# Clawdbot 启动脚本
+
+echo "========================================"
+echo "   Clawdbot 服务启动"
+echo "========================================"
 echo ""
-success "==================================="
+
+cd "$HOME/clawdbot"
+
+echo "[1] 启动 Clawdbot 服务 (端口 18789)"
+echo "[2] 配置 AI 模型"
+echo "[3] 查看状态"
+echo "[0] 退出"
+echo ""
+
+read -p "请选择 [0-3]: " choice
+
+case $choice in
+    1)
+        echo "正在启动服务..."
+        pnpm moltbot gateway --port 18789
+        ;;
+    2)
+        echo "启动配置向导..."
+        pnpm moltbot onboard --install-daemon
+        read -p "按 Enter 返回主菜单"
+        exec "$0"
+        ;;
+    3)
+        pnpm moltbot doctor
+        read -p "按 Enter 返回主菜单"
+        exec "$0"
+        ;;
+    0)
+        echo "再见！"
+        exit 0
+        ;;
+    *)
+        echo "无效选择"
+        ;;
+esac
+EOF
+
+chmod +x "$START_SCRIPT"
+
+# ========== 完成 ==========
+echo ""
+success "========================================"
 success "   安装完成！"
-success "==================================="
+success "========================================"
 echo ""
 warning "========================================"
-warning "  下一步: 配置 AI 模型 API 密钥"
+warning "  重要: 需要配置 AI 模型 API 密钥"
 warning "========================================"
 echo ""
 echo -e "${CYAN}配置向导将引导你完成以下设置:${NC}"
 echo -e "  ${WHITE}- 选择 AI 模型 (Anthropic Claude / OpenAI GPT)${NC}"
 echo -e "  ${WHITE}- 输入 API 密钥${NC}"
-echo -e "  ${WHITE}- 选择消息渠道 (WhatsApp / Telegram / Discord 等)${NC}"
-echo -e "  ${WHITE}- 安装系统服务${NC}"
+echo -e "  ${WHITE}- 选择消息渠道${NC}"
 echo ""
 echo -e "${YELLOW}【API 密钥获取地址】${NC}"
 echo -e "  ${GRAY}Anthropic: https://console.anthropic.com/${NC}"
 echo -e "  ${GRAY}OpenAI:     https://platform.openai.com/api-keys${NC}"
 echo ""
-info "如果没有 API 密钥，可以稍后运行: pnpm moltbot onboard"
-echo ""
-read -p "按 Enter 启动配置向导，或按 Ctrl+C 跳过..."
-echo ""
 
-pnpm moltbot onboard --install-daemon
+read -p "按 Enter 启动配置向导，或输入 N 跳过: " response
+
+if [[ "$response" != "N" && "$response" != "n" ]]; then
+    echo ""
+    info "正在启动配置向导..."
+    pnpm moltbot onboard --install-daemon
+fi
 
 echo ""
-success "==================================="
+success "========================================"
 success "   Clawdbot 安装成功！"
-success "==================================="
+success "========================================"
 echo ""
-info "常用命令:"
+info "桌面已创建快捷启动脚本: start-clawdbot.sh"
+info "以后双击即可启动 Clawdbot"
+echo ""
+echo -e "${YELLOW}【常用命令】${NC}"
 echo -e "  ${CYAN}启动服务:${NC}     pnpm moltbot gateway --port 18789"
-echo -e "  ${CYAN}发送消息:${NC}     pnpm moltbot message send --to +1234567890 --message 'Hello'"
-echo -e "  ${CYAN}与AI对话:${NC}     pnpm moltbot agent --message '你好'"
+echo -e "  ${CYAN}配置向导:${NC}     pnpm moltbot onboard"
 echo -e "  ${CYAN}查看状态:${NC}     pnpm moltbot doctor"
 echo ""
-info "文档: https://docs.molt.bot"
-info "Discord: https://discord.gg/clawd"
-echo ""
 
-# 为 Linux 用户添加系统服务提示
 if [ "$MACHINE" = "Linux" ]; then
-    info "提示: 已安装 systemd 服务，使用以下命令管理:"
-    echo -e "  ${CYAN}启动服务:${NC}     systemctl --user start moltbot-gateway"
-    echo -e "  ${CYAN}停止服务:${NC}     systemctl --user stop moltbot-gateway"
-    echo -e "  ${CYAN}查看状态:${NC}     systemctl --user status moltbot-gateway"
+    info "提示: 可使用 systemd 管理服务"
+    echo "  启动: systemctl --user start moltbot-gateway"
     echo ""
 fi
+
+info "文档: https://docs.molt.bot"
+info "Discord: https://discord.gg/clawd"
+
+# 清理临时文件
+rm -rf "$TEMP_DIR"
