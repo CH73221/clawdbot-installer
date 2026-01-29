@@ -33,8 +33,11 @@ const TOKEN_EXPIRY = 2 * 60 * 60 * 1000; // 2 小时
 // 管理后台随机路径（部署后可通过环境变量修改）
 const ADMIN_PATH = process.env.ADMIN_PATH || generateRandomPath();
 
+// 数据目录配置（与 database.js 保持一致）
+const DATA_DIR = fs.existsSync('/data') ? '/data' : path.join(__dirname);
+
 // 操作日志文件
-const ADMIN_LOG_FILE = path.join(__dirname, 'admin.log');
+const ADMIN_LOG_FILE = path.join(DATA_DIR, 'admin.log');
 
 // ==================== 辅助函数 ====================
 function generateRandomPath() {

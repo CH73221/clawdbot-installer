@@ -1,12 +1,25 @@
 // ==================== Database.js ====================
-// JSON 文件存储 - 无需额外依赖
+// JSON 文件存储 - 支持 Railway Volume 持久化
 
 const fs = require('fs');
 const path = require('path');
 
+// ==================== 数据目录配置 ====================
+// Railway Volume 挂载点: /data
+// 本地开发: 项目目录
+const DATA_DIR = fs.existsSync('/data') ? '/data' : __dirname;
+
+// 确保数据目录存在
+if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
 // 数据库文件路径
-const DB_FILE = path.join(__dirname, 'keys.json');
-const LOG_FILE = path.join(__dirname, 'usage.log');
+const DB_FILE = path.join(DATA_DIR, 'keys.json');
+const LOG_FILE = path.join(DATA_DIR, 'usage.log');
+
+// 启动时显示数据存储位置
+console.log(`[Database] 数据存储位置: ${DATA_DIR}`);
 
 // ==================== 数据结构 ====================
 let db = {

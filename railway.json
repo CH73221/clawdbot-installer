@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "context": "server",
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "cd server && node server.js",
+    "healthcheckPath": "/api/health"
+  }
+}
