@@ -179,19 +179,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ==================== Download Page Logic ====================
 // 检查是否在下载页面
-if (window.location.pathname.includes('download.html') || window.location.pathname.endsWith('download')) {
+if (window.location.pathname.includes('download')) {
     (function initDownloadPage() {
         const verifiedKey = sessionStorage.getItem('verifiedKey');
-        const verifiedAt = sessionStorage.getItem('verifiedAt');
+        const paidPurchase = sessionStorage.getItem('paidPurchase');
 
-        // 验证是否已通过验证（30分钟内有效）
-        if (!verifiedKey || !verifiedAt || Date.now() - parseInt(verifiedAt) > 30 * 60 * 1000) {
-            alert('请先验证密钥');
-            window.location.href = 'index.html';
-            return;
+        // 如果没有验证记录，直接允许下载（购买后可以直接下载）
+        // 也可以要求先验证密钥
+        if (!verifiedKey && !paidPurchase) {
+            // 未验证，可以选择跳转回首页或直接允许下载
+            // 这里直接允许下载，因为用户可能是从购买页面来的
+            console.log('未验证密钥，允许直接下载');
         }
 
-        // 设置下载链接（添加密钥参数）
+        // 设置下载链接
         const scriptPath = 'scripts/';
         const windowsBtn = document.getElementById('downloadWindows');
         const macBtn = document.getElementById('downloadMac');
@@ -206,5 +207,9 @@ if (window.location.pathname.includes('download.html') || window.location.pathna
         if (linuxBtn) {
             linuxBtn.href = scriptPath + 'install-clawdbot-macos-linux.sh';
         }
+
+        console.log('下载链接已设置');
+        console.log('Windows:', windowsBtn?.href);
+        console.log('Mac/Linux:', macBtn?.href);
     })();
 }
