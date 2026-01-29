@@ -9,12 +9,7 @@ if %errorLevel% neq 0 (
 )
 
 echo Downloading and running Clawdbot installer...
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-"$url='https://raw.githubusercontent.com/CH73221/clawdbot-installer/refs/heads/main/scripts/install-clawdbot-windows.ps1'; ^
-$script='$env:TEMP\clawdbot.ps1'; ^
-Invoke-WebRequest -Uri $url -OutFile $script -UseBasicParsing; ^
-& $script; ^
-Remove-Item $script -ErrorAction SilentlyContinue"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$url='https://raw.githubusercontent.com/CH73221/clawdbot-installer/refs/heads/main/scripts/install-clawdbot-windows.ps1'; $script=$env:TEMP+'\clawdbot.ps1'; Invoke-WebRequest -Uri $url -OutFile $script -UseBasicParsing; & $script; Remove-Item $script -ErrorAction SilentlyContinue"
 
 if %errorLevel% neq 0 (
     echo.
